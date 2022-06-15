@@ -1,0 +1,22 @@
+{
+  "name": "project-template",
+  "description": "This project's purpose is to have a template ready to use for other personal projects. The template consists of a NestJS backend with validation, tests, pre-commit hooks, user authentication, and more!",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Marco VERBEEK",
+  "license": "ISC",
+  "scripts": {
+    "api": "cd apps/api && npm run start:dev",
+    "api:prod": "cd apps/api && npm run start:prod",
+    "api:build": "cd apps/api && npm run build",
+    "api:test": "cd apps/api && npm run test:watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marco-verbeek/project-template.git"
+  },
+  "devDependencies": {
+    "prettier": "^2.7.0"
+  }
+}
