@@ -1,15 +1,14 @@
-import * as argon2 from 'argon2';
-
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-
-import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import * as argon2 from 'argon2';
+
+import { getUserMock } from '../../common/mocks/entities/user.mock';
+import { getMockConfigService } from '../../common/mocks/services/config-service.mock';
+import { AuthService } from '../auth.service';
 import { User } from '../schemas/user.schema';
 import { UsersRepository } from './../users.repository';
-import { getMockConfigService } from '../../common/mocks/services/config-service.mock';
-import { getUserMock } from '../../common/mocks/entities/user.mock';
 
 describe('AuthService', () => {
   let authService: AuthService;

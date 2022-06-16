@@ -6,11 +6,11 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { GetCurrentUser } from '../common/decorators/get-current-user.decorator';
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { RefreshTokenGuard } from '../common/guards/refresh-token.guard';
-
 import { AuthService } from './auth.service';
 import { AuthDTO } from './dtos/auth.dto';
 import { Tokens } from './types/tokens.type';

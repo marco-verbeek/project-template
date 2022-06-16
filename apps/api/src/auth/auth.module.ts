@@ -1,12 +1,12 @@
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { User, UserSchema } from './schemas/user.schema';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 
-import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtModule } from '@nestjs/jwt';
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from './schemas/user.schema';
+import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { UsersRepository } from './users.repository';
 
