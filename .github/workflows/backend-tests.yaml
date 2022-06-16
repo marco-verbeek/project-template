@@ -1,0 +1,33 @@
+name: Run backend tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/api/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/api/**'
+
+jobs:
+  run-tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 12
+
+      - name: Install deps and run tests
+        working-directory: ./apps/api
+        run: |
+          npm ci
+          npm run test
