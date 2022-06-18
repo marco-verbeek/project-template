@@ -6,6 +6,8 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] implementing user authentication with access and refresh tokens, 
 - [ ] writing JSDoc for authentication
 - [ ] setting up pre-commit hooks, 
+  - [ ] commitlint
+  - [ ] lintstaged
 - [x] setting up GH workflows
 - [ ] setting up dependency updates
 - [ ] having OpenAPI docs ready/auto-generated,
