@@ -4,7 +4,7 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] setting up a clean and minimalistic NestJS API,
 - [x] adding the logger middleware
 - [x] implementing user authentication with access and refresh tokens, 
-- [ ] writing JSDoc for authentication
+- [x] writing JSDoc for authentication
 - [ ] setting up pre-commit hooks, 
   - [ ] commitlint
   - [ ] lintstaged
