@@ -11,6 +11,11 @@ export class UsersRepository {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
+  /**
+   * It creates a new user using the provided registration data.
+   * @param {registerUserDTO} registrationData - the registration data
+   * @returns A promise that resolves to the created user
+   */
   createUser(registrationData: registerUserDTO): Promise<User> {
     return this.userModel.create({
       ...registrationData,
@@ -18,6 +23,11 @@ export class UsersRepository {
     });
   }
 
+  /**
+   * It updates the user's refresh token in the database.
+   * @param {string} userId - The user's id
+   * @param {string} refreshToken - The user's refresh token
+   */
   updateUserRefreshToken(userId: string, refreshToken: string) {
     return this.userModel
       .updateOne(
@@ -27,14 +37,28 @@ export class UsersRepository {
       .exec();
   }
 
+  /**
+   * Find a user by their id and return the user as a promise.
+   * @param {string} userId - The id of the user we want to find
+   * @returns A promise of a user
+   */
   findUserById(userId: string): Promise<User> {
     return this.userModel.findById(new Types.ObjectId(userId)).exec();
   }
 
+  /**
+   * Find a user by email and return the user as a promise.
+   * @param {string} email - The email of the user we want to find
+   * @returns A promise of a user
+   */
   findUserByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email }).exec();
   }
 
+  /**
+   * It deletes the user's refresh token from the database.
+   * @param {string} userId - The user's id
+   */
   async deleteUserRefreshToken(userId: string) {
     await this.userModel
       .updateOne(
