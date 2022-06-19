@@ -19,6 +19,11 @@ export class AuthService {
     private usersRepository: UsersRepository,
   ) {}
 
+  /**
+   * It creates a new user using the local strategy by creating the tokens and hashing the refresh token.
+   * @param {AuthDTO} authData - contains the data required for a local registration.
+   * @returns the authentication tokens created for this user.
+   */
   async localRegister(authData: AuthDTO): Promise<Tokens> {
     const hashedPassword = await this.hashData(authData.password);
 
@@ -46,6 +51,12 @@ export class AuthService {
     }
   }
 
+  /**
+   * It takes an email and password, finds the user in the database and checks if the password matches.
+   * If it does, it returns a new set of authentication tokens for that user.
+   * @param {AuthDTO} authData - contains the data required to authenticate the user.
+   * @returns the new authentication tokens for this user.
+   */
   async localLogin(authData: AuthDTO): Promise<Tokens> {
     const user = await this.usersRepository.findUserByEmail(authData.email);
     if (!user) throw new ForbiddenException('Access denied');
@@ -65,10 +76,21 @@ export class AuthService {
     return tokens;
   }
 
+  /**
+   * It deletes the user's refresh token from the database.
+   * @param {string} userId - The user's id.
+   */
   async logout(userId: string) {
     await this.usersRepository.deleteUserRefreshToken(userId);
   }
 
+  /**
+   * It takes a userId and a refreshToken, finds the user in the database, verifies that the refreshToken
+   * matches the one stored in the database, and if it does, it returns a new set of tokens.
+   * @param {string} userId - The user's id
+   * @param {string} refreshToken - The user's refresh token
+   * @returns The new, refreshed tokens.
+   */
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.usersRepository.findUserById(userId);
     if (!user || !user.hashedRefreshToken)
@@ -89,10 +111,21 @@ export class AuthService {
     return tokens;
   }
 
+  /**
+   * It takes a string, hashes it, and returns the hash
+   * @param {string} data - The data to be hashed.
+   * @returns A promise that resolves to a string.
+   */
   async hashData(data: string) {
     return argon2.hash(data);
   }
 
+  /**
+   * It signs a JWT with the user's id and email, and returns the access and refresh tokens
+   * @param {string} userId - The user's id
+   * @param {string} email - The user's email
+   * @returns An object with two properties: the accessToken and refreshToken.
+   */
   async getTokens(userId: string, email: string) {
     const accessToken = await this.jwtService.signAsync(
       {
