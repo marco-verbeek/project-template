@@ -7,5 +7,5 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] writing JSDoc for authentication
 - [x] setting up GH workflows
 - [x] having OpenAPI docs ready/auto-generated,
-- [ ] separate users and auth modules (DDD?)
+- [x] separate users and auth modules (DDD?)
 - [ ] Dockerized app
