@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 
 import { UsersRepository } from '../users/users.repository';
-import { AuthDTO } from './dtos/auth.dto';
+import { LoginUserDTO } from './dtos/login-user.dto';
 import { RegisterUserDTO } from './dtos/register-user.dto';
 import { Tokens } from './types/tokens.type';
 
@@ -55,10 +55,10 @@ export class AuthService {
   /**
    * It takes an email and password, finds the user in the database and checks if the password matches.
    * If it does, it returns a new set of authentication tokens for that user.
-   * @param {AuthDTO} authData - contains the data required to authenticate the user.
+   * @param {LoginUserDTO} authData - contains the data required to authenticate the user.
    * @returns the new authentication tokens for this user.
    */
-  async localLogin(authData: AuthDTO): Promise<Tokens> {
+  async localLogin(authData: LoginUserDTO): Promise<Tokens> {
     const user = await this.usersRepository.findUserByEmail(authData.email);
     if (!user) throw new ForbiddenException('Access denied');
 

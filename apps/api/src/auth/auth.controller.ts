@@ -22,7 +22,7 @@ import { GetCurrentUser } from '../common/decorators/get-current-user.decorator'
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { RefreshTokenGuard } from '../common/guards/refresh-token.guard';
 import { AuthService } from './auth.service';
-import { AuthDTO } from './dtos/auth.dto';
+import { LoginUserDTO } from './dtos/login-user.dto';
 import { RegisterUserDTO } from './dtos/register-user.dto';
 import { Tokens } from './types/tokens.type';
 
@@ -59,7 +59,7 @@ export class AuthController {
     description: 'Access denied: invalid email or password.',
   })
   @HttpCode(HttpStatus.OK)
-  localLogin(@Body() authData: AuthDTO): Promise<Tokens> {
+  localLogin(@Body() authData: LoginUserDTO): Promise<Tokens> {
     return this.authService.localLogin(authData);
   }
 
