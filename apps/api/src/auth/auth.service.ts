@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 
 import { AuthDTO } from './dtos/auth.dto';
+import { RegisterUserDTO } from './dtos/register-user.dto';
 import { Tokens } from './types/tokens.type';
 import { UsersRepository } from './users.repository';
 
@@ -21,15 +22,15 @@ export class AuthService {
 
   /**
    * It creates a new user using the local strategy by creating the tokens and hashing the refresh token.
-   * @param {AuthDTO} authData - contains the data required for a local registration.
+   * @param {RegisterUserDTO} registrationData - contains the data required for a local registration.
    * @returns the authentication tokens created for this user.
    */
-  async localRegister(authData: AuthDTO): Promise<Tokens> {
-    const hashedPassword = await this.hashData(authData.password);
+  async localRegister(registrationData: RegisterUserDTO): Promise<Tokens> {
+    const hashedPassword = await this.hashData(registrationData.password);
 
     try {
       const user = await this.usersRepository.createUser({
-        ...authData,
+        ...registrationData,
         password: hashedPassword,
       });
 
