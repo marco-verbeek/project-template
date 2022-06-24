@@ -6,9 +6,9 @@ import * as argon2 from 'argon2';
 
 import { getUserMock } from '../../common/mocks/entities/user.mock';
 import { getMockConfigService } from '../../common/mocks/services/config-service.mock';
+import { User } from '../../users/schemas/user.schema';
+import { UsersRepository } from '../../users/users.repository';
 import { AuthService } from '../auth.service';
-import { User } from '../schemas/user.schema';
-import { UsersRepository } from './../users.repository';
 
 describe('AuthService', () => {
   let authService: AuthService;

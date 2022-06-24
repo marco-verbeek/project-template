@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { registerUserDTO } from './dtos/register-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -13,12 +12,14 @@ export class UsersRepository {
 
   /**
    * It creates a new user using the provided registration data.
-   * @param {registerUserDTO} registrationData - the registration data
+   * @param {string} email - the user's email
+   * @param {string} password - the user's hashed password
    * @returns A promise that resolves to the created user
    */
-  createUser(registrationData: registerUserDTO): Promise<User> {
+  createUser({ email, password }): Promise<User> {
     return this.userModel.create({
-      ...registrationData,
+      email,
+      password,
       _id: new Types.ObjectId(),
     });
   }
