@@ -11,7 +11,7 @@ import LoggerMiddleware from './middlewares/logger.middleware';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get('DATABASE_URL'),
+        uri: configService.get('DATABASE_URI'),
       }),
     }),
     AuthModule,
