@@ -8,4 +8,5 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] setting up GH workflows
 - [x] having OpenAPI docs ready/auto-generated,
 - [x] separate users and auth modules (DDD?)
+- [x] add healthcheck endpoint 
 - [ ] Dockerized app
