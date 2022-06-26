@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Debug: api",
+      "remoteRoot": "/api",
+      "localRoot": "${workspaceFolder}/apps/api",
+      "port": 9229,
+      "restart": true,
+      "address": "0.0.0.0",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

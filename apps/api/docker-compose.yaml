@@ -5,7 +5,7 @@ services:
   api:
     build:
       context: .
-    command: npm run start:dev
+    command: npm run start:debug
     restart: unless-stopped
     volumes:
       - .:/api
