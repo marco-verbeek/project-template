@@ -7,8 +7,7 @@
   "license": "ISC",
   "scripts": {
     "api": "cd apps/api && docker-compose up",
-    "api:test": "cd apps/api && npm run test:watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "api:test": "cd apps/api && npm run test:watch"
   },
   "repository": {
     "type": "git",
