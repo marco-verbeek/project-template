@@ -6,10 +6,7 @@
   "author": "Marco VERBEEK",
   "license": "ISC",
   "scripts": {
-    "api": "cd apps/api && npm run start:dev",
-    "api:dev": "cd apps/api && docker-compose up",
-    "api:prod": "cd apps/api && npm run start:prod",
-    "api:build": "cd apps/api && npm run build",
+    "api": "cd apps/api && docker-compose up",
     "api:test": "cd apps/api && npm run test:watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
