@@ -1,0 +1,30 @@
+# This docker-compose file is to be used for development builds only!
+
+version: '3.8'
+services:
+  api:
+    build:
+      context: .
+    command: npm run start:dev
+    restart: unless-stopped
+    volumes:
+      - .:/api
+    ports:
+      - 3000:3000
+      - 9229:9229
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:5.0
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+
+volumes:
+  mongodb-data:

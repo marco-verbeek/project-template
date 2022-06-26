@@ -3,17 +3,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from './auth/auth.module';
+import mongodbConfig from './config/mongodb.config';
 import { HealthModule } from './health/health.module';
 import LoggerMiddleware from './middlewares/logger.middleware';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [mongodbConfig],
+    }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get('DATABASE_URI'),
+        uri: configService.get<string>('mongodb.uri'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
       }),
     }),
     AuthModule,
