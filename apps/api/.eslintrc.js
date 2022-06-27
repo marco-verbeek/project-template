@@ -25,6 +25,13 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'no-console': 1,
+    'prefer-spread': 1,
+    'prefer-template': 1,
+    'no-var': 1,
+    'no-else-return': 1,
+    'no-await-in-loop': 1,
+    'no-extra-parens': [1, 'functions'],
+    'no-duplicate-imports': 1,
     'import/order': [
       'error',
       {
