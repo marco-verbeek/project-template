@@ -1,0 +1,12 @@
+.*
+node_modules/
+
+!.gitignore
+!.env.sample
+!.eslintrc.json
+
+!package-lock.json
+!package.json
+
+!src
+!scripts

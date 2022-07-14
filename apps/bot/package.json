@@ -1,0 +1,28 @@
+{
+  "name": "hangman-bot",
+  "version": "1.0.0",
+  "description": "A simple DiscordJS bot that acts as the frontend for PROJECT: Hangman",
+  "main": "main.js",
+  "author": "Jessica MANKEVITCH and Marco VERBEEK",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JessMnk/project-hangman.git"
+  },
+  "scripts": {
+    "start": "nodemon --inspect ./main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.36.1",
+    "discord.js": "^13.8.1",
+    "dotenv": "^16.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "nodemon": "^2.0.19",
+    "prettier": "^2.7.1"
+  }
+}
