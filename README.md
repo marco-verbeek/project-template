@@ -10,6 +10,11 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] separate users and auth modules (DDD?)
 - [x] add healthcheck endpoint 
 - [x] Dockerized app
+- [ ] Better health checks
+- [ ] Claims-based authorization
+- [ ] Google SSO registration/login
+- [ ] Verify mail
+- [ ] 2 factor authentication
 
 ### Discord Bot
 Also contains the boilerplate code for a Discord bot - feel free to delete it if not needed. 
