@@ -1,15 +1,24 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LoggerModule } from 'nestjs-pino';
 
 import { AuthModule } from './auth/auth.module';
 import mongodbConfig from './config/mongodb.config';
 import { HealthModule } from './health/health.module';
-import LoggerMiddleware from './middlewares/logger.middleware';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        name: 'HTTP',
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? { target: 'pino-pretty' }
+            : undefined,
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [mongodbConfig],
@@ -27,8 +36,4 @@ import { UsersModule } from './users/users.module';
     HealthModule,
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
