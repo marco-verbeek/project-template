@@ -1,14 +1,15 @@
-# This docker-compose file is to be used for development builds only!
-
-version: '3.8'
 services:
   api:
     build:
+      dockerfile: Dockerfile
       context: .
       target: development
-    restart: unless-stopped
     volumes:
-      - .:/api
+      - .:/usr/src/app
+      - ./usr/src/app/node_modules
+    env_file:
+      - .env
+    command: npm run start:debug
     ports:
       - 3000:3000
       - 9229:9229
