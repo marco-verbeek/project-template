@@ -11,6 +11,7 @@ This project’s purpose is to have a template ready to use for other personal p
 - [x] add healthcheck endpoint 
 - [x] Dockerized app
 - [x] Better health checks
+- [ ] NestJS REPL
 - [ ] Claims-based authorization
 - [ ] Google SSO registration/login
 - [ ] Verify mail
