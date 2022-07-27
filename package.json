@@ -6,7 +6,7 @@
   "author": "Marco VERBEEK",
   "license": "ISC",
   "scripts": {
-    "api": "cd apps/api && docker-compose up",
+    "api": "cd apps/api && npm run start:docker",
     "api:test": "cd apps/api && npm run test:watch"
   },
   "repository": {
