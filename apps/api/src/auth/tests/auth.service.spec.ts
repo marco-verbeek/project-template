@@ -168,7 +168,7 @@ describe('AuthService', () => {
       });
 
       const refreshReq = await authService.refreshTokens(
-        user._id.toString(),
+        user._id,
         refreshToken,
       );
       expect(refreshReq).toBeDefined();

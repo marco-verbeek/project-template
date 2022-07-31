@@ -34,9 +34,9 @@ export class AuthService {
         password: hashedPassword,
       });
 
-      const tokens = await this.getTokens(user._id.toString(), user.email);
+      const tokens = await this.getTokens(user._id, user.email);
       await this.usersRepository.updateUserRefreshToken(
-        user._id.toString(),
+        user._id,
         await this.hashData(tokens.refreshToken),
       );
 
@@ -68,9 +68,9 @@ export class AuthService {
     );
     if (!passwordMatches) throw new ForbiddenException('Access denied');
 
-    const tokens = await this.getTokens(user._id.toString(), user.email);
+    const tokens = await this.getTokens(user._id, user.email);
     await this.usersRepository.updateUserRefreshToken(
-      user._id.toString(),
+      user._id,
       await this.hashData(tokens.refreshToken),
     );
 
@@ -103,9 +103,9 @@ export class AuthService {
     );
     if (!tokenMatches) throw new ForbiddenException('Access denied');
 
-    const tokens = await this.getTokens(user._id.toString(), user.email);
+    const tokens = await this.getTokens(user._id, user.email);
     await this.usersRepository.updateUserRefreshToken(
-      user._id.toString(),
+      user._id,
       await this.hashData(tokens.refreshToken),
     );
 
