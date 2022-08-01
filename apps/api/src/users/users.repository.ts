@@ -18,9 +18,9 @@ export class UsersRepository {
    */
   createUser({ email, password }): Promise<User> {
     return this.userModel.create({
+      _id: new Types.ObjectId(),
       email,
       password,
-      _id: new Types.ObjectId(),
     });
   }
 
