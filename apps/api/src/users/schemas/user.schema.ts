@@ -7,7 +7,7 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
   @Transform(value => value.toString())
-  @Prop()
+  @Prop({ required: true })
   _id: string;
 
   @Prop({ unique: true })
