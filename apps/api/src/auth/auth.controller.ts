@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -21,6 +22,8 @@ import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decor
 import { GetCurrentUser } from '../common/decorators/get-current-user.decorator';
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { RefreshTokenGuard } from '../common/guards/refresh-token.guard';
+import MongooseClassSerializerInterceptor from '../common/interceptors/mongoose-class-serializer.interceptor';
+import { User } from '../users/schemas/user.schema';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dtos/login-user.dto';
 import { RegisterUserDTO } from './dtos/register-user.dto';
@@ -28,6 +31,7 @@ import { Tokens } from './types/tokens.type';
 
 @ApiTags('authentication')
 @Controller('auth')
+@UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
   constructor(private authService: AuthService) {}
 

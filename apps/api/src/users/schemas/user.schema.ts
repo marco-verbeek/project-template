@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
@@ -13,9 +13,11 @@ export class User {
   @Prop({ unique: true })
   email: string;
 
+  @Exclude()
   @Prop()
   password: string;
 
+  @Exclude()
   @Prop()
   hashedRefreshToken?: string;
 }
