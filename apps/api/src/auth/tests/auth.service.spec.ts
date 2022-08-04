@@ -2,17 +2,17 @@ import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 
 import { getUserMock } from '../../common/mocks/entities/user.mock';
 import { getMockConfigService } from '../../common/mocks/services/config-service.mock';
-import { User } from '../../users/schemas/user.schema';
-import { UsersRepository } from '../../users/users.repository';
+import { PrismaService } from '../../prisma/prisma.service';
 import { AuthService } from '../auth.service';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let usersRepository: UsersRepository;
+  let prismaService: PrismaService;
 
   let user: User;
 
@@ -29,22 +29,21 @@ describe('AuthService', () => {
           useValue: getMockConfigService(),
         },
 
-        // AuthService requires a usersRepository, which acts as a database for users.
-        // This repository is mocked on-the-fly, depending on its use for each unique test.
         {
-          provide: UsersRepository,
+          provide: PrismaService,
           useValue: {
-            createUser: jest.fn(),
-            updateUserRefreshToken: jest.fn(),
-            findUserByEmail: jest.fn(),
-            findUserById: jest.fn(),
+            user: {
+              create: jest.fn(),
+              update: jest.fn(),
+              findUnique: jest.fn(),
+            },
           },
         },
       ],
     }).compile();
 
     authService = moduleRef.get<AuthService>(AuthService);
-    usersRepository = moduleRef.get<UsersRepository>(UsersRepository);
+    prismaService = moduleRef.get<PrismaService>(PrismaService);
   });
 
   beforeEach(() => {
@@ -53,12 +52,11 @@ describe('AuthService', () => {
 
   it('should have defined dependencies', () => {
     expect(authService).toBeDefined();
-    expect(usersRepository).toBeDefined();
   });
 
   describe('local registration', () => {
     it('should successfully register a user', async () => {
-      jest.spyOn(usersRepository, 'createUser').mockResolvedValueOnce(user);
+      jest.spyOn(prismaService.user, 'create').mockResolvedValueOnce(user);
 
       const registerReq = await authService.localRegister({
         email: user.email,
@@ -71,9 +69,7 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if email already exists', async () => {
-      jest
-        .spyOn(usersRepository, 'createUser')
-        .mockRejectedValueOnce({ code: 11000 });
+      jest.spyOn(prismaService.user, 'create').mockRejectedValueOnce({});
 
       expect(() =>
         authService.localRegister({
@@ -86,9 +82,7 @@ describe('AuthService', () => {
 
   describe('local login', () => {
     it('should throw if user does not exist', async () => {
-      jest
-        .spyOn(usersRepository, 'findUserByEmail')
-        .mockResolvedValueOnce(null);
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
 
       expect(() =>
         authService.localLogin({
@@ -99,7 +93,7 @@ describe('AuthService', () => {
     });
 
     it('should log the user in if password matches', async () => {
-      jest.spyOn(usersRepository, 'findUserByEmail').mockResolvedValueOnce({
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce({
         ...user,
         password: await argon2.hash(user.password),
       });
@@ -115,7 +109,7 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if the password does not match', async () => {
-      jest.spyOn(usersRepository, 'findUserByEmail').mockResolvedValueOnce({
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce({
         ...user,
         password: await argon2.hash(user.password),
       });
@@ -131,46 +125,44 @@ describe('AuthService', () => {
 
   describe('refresh', () => {
     it('should throw if the user does not exist', async () => {
-      jest.spyOn(usersRepository, 'findUserById').mockResolvedValueOnce(null);
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce(null);
 
       expect(() =>
-        authService.refreshTokens('userId', 'refreshToken'),
+        authService.refreshTokens(12345, 'refreshToken'),
       ).rejects.toThrowError(ForbiddenException);
     });
 
     it('should throw if the user is logged out', async () => {
-      jest.spyOn(usersRepository, 'findUserById').mockResolvedValueOnce({
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce({
         ...user,
         hashedRefreshToken: null,
       });
 
       expect(() =>
-        authService.refreshTokens('userId', 'refreshToken'),
+        authService.refreshTokens(12345, 'refreshToken'),
       ).rejects.toThrowError(ForbiddenException);
     });
 
     it('should throw if the refresh token is incorrect', async () => {
-      jest.spyOn(usersRepository, 'findUserById').mockResolvedValueOnce({
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce({
         ...user,
         hashedRefreshToken: await argon2.hash('random-string'),
       });
 
       expect(() =>
-        authService.refreshTokens('userId', 'refreshToken'),
+        authService.refreshTokens(12345, 'refreshToken'),
       ).rejects.toThrowError(ForbiddenException);
     });
 
     it("should refresh the user's tokens", async () => {
       const refreshToken = 'rt-string';
-      jest.spyOn(usersRepository, 'findUserById').mockResolvedValueOnce({
+      jest.spyOn(prismaService.user, 'findUnique').mockResolvedValueOnce({
         ...user,
         hashedRefreshToken: await argon2.hash(refreshToken),
       });
 
-      const refreshReq = await authService.refreshTokens(
-        user._id,
-        refreshToken,
-      );
+      const refreshReq = await authService.refreshTokens(user.id, refreshToken);
+
       expect(refreshReq).toBeDefined();
       expect(refreshReq).toHaveProperty('accessToken');
       expect(refreshReq).toHaveProperty('refreshToken');

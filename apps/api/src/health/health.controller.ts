@@ -4,14 +4,12 @@ import {
   HealthCheck,
   HealthCheckService,
   MemoryHealthIndicator,
-  MongooseHealthIndicator,
 } from '@nestjs/terminus';
 
 @Controller('health')
 export class HealthController {
   constructor(
     private healthCheckService: HealthCheckService,
-    private mongoHealthIndicator: MongooseHealthIndicator,
     private memoryHealthIndicator: MemoryHealthIndicator,
     private diskHealthIndicator: DiskHealthIndicator,
   ) {}
@@ -20,7 +18,6 @@ export class HealthController {
   @HealthCheck()
   checkHealth() {
     return this.healthCheckService.check([
-      () => this.mongoHealthIndicator.pingCheck('mongoose'),
       // the process should not use more than 300MB memory
       () =>
         this.memoryHealthIndicator.checkHeap('memory heap', 300 * 1024 * 1024),

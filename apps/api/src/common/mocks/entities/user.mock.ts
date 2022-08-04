@@ -1,13 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { Types } from 'mongoose';
-
-import { User } from '../../../users/schemas/user.schema';
+import { User } from '@prisma/client';
 
 export const getUserMock = (): User => {
   return {
-    _id: new Types.ObjectId().toString(),
-
+    id: null,
     email: faker.internet.email(),
     password: faker.internet.password(),
+    hashedRefreshToken: null,
   };
 };
