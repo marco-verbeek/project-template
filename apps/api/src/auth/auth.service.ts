@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 
-import { UsersRepository } from '../users/users.repository';
+import { PrismaService } from '../prisma/prisma.service';
 import { LoginUserDTO } from './dtos/login-user.dto';
 import { RegisterUserDTO } from './dtos/register-user.dto';
 import { Tokens } from './types/tokens.type';
@@ -17,7 +17,7 @@ export class AuthService {
   constructor(
     private configService: ConfigService,
     private jwtService: JwtService,
-    private usersRepository: UsersRepository,
+    private readonly prismaService: PrismaService,
   ) {}
 
   /**
@@ -29,25 +29,21 @@ export class AuthService {
     const hashedPassword = await this.hashData(registrationData.password);
 
     try {
-      const user = await this.usersRepository.createUser({
-        ...registrationData,
-        password: hashedPassword,
+      const user = await this.prismaService.user.create({
+        data: {
+          email: registrationData.email,
+          password: hashedPassword,
+        },
       });
 
-      const tokens = await this.getTokens(user._id, user.email);
-      await this.usersRepository.updateUserRefreshToken(
-        user._id,
-        await this.hashData(tokens.refreshToken),
-      );
+      const tokens = await this.getTokens(user.id, user.email);
+      await this.prismaService.user.update({
+        where: { id: user.id },
+        data: { hashedRefreshToken: await this.hashData(tokens.refreshToken) },
+      });
 
       return tokens;
     } catch (err) {
-      if (err.code === 11000) {
-        throw new BadRequestException(
-          'A user with this email address already exists',
-        );
-      }
-
       throw new BadRequestException('Could not create account');
     }
   }
@@ -59,55 +55,73 @@ export class AuthService {
    * @returns the new authentication tokens for this user.
    */
   async localLogin(authData: LoginUserDTO): Promise<Tokens> {
-    const user = await this.usersRepository.findUserByEmail(authData.email);
-    if (!user) throw new ForbiddenException('Access denied');
+    const user = await this.prismaService.user.findUnique({
+      where: { email: authData.email },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('Access denied');
+    }
 
     const passwordMatches = await argon2.verify(
       user.password,
       authData.password,
     );
-    if (!passwordMatches) throw new ForbiddenException('Access denied');
 
-    const tokens = await this.getTokens(user._id, user.email);
-    await this.usersRepository.updateUserRefreshToken(
-      user._id,
-      await this.hashData(tokens.refreshToken),
-    );
+    if (!passwordMatches) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: { hashedRefreshToken: await this.hashData(tokens.refreshToken) },
+    });
 
     return tokens;
   }
 
   /**
    * It deletes the user's refresh token from the database.
-   * @param {string} userId - The user's id.
+   * @param {number} userId - The user's id.
    */
-  async logout(userId: string) {
-    await this.usersRepository.deleteUserRefreshToken(userId);
+  async logout(userId: number) {
+    await this.prismaService.user.update({
+      where: { id: userId },
+      data: { hashedRefreshToken: null },
+    });
   }
 
   /**
    * It takes a userId and a refreshToken, finds the user in the database, verifies that the refreshToken
    * matches the one stored in the database, and if it does, it returns a new set of tokens.
-   * @param {string} userId - The user's id
+   * @param {number} userId - The user's id
    * @param {string} refreshToken - The user's refresh token
    * @returns The new, refreshed tokens.
    */
-  async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.usersRepository.findUserById(userId);
-    if (!user || !user.hashedRefreshToken)
+  async refreshTokens(userId: number, refreshToken: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.hashedRefreshToken) {
       throw new ForbiddenException('Access denied');
+    }
 
     const tokenMatches = await argon2.verify(
       user.hashedRefreshToken,
       refreshToken,
     );
-    if (!tokenMatches) throw new ForbiddenException('Access denied');
 
-    const tokens = await this.getTokens(user._id, user.email);
-    await this.usersRepository.updateUserRefreshToken(
-      user._id,
-      await this.hashData(tokens.refreshToken),
-    );
+    if (!tokenMatches) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.prismaService.user.update({
+      where: { id: user.id },
+      data: { hashedRefreshToken: await this.hashData(tokens.refreshToken) },
+    });
 
     return tokens;
   }
@@ -123,11 +137,11 @@ export class AuthService {
 
   /**
    * It signs a JWT with the user's id and email, and returns the access and refresh tokens
-   * @param {string} userId - The user's id
+   * @param {number} userId - The user's id
    * @param {string} email - The user's email
    * @returns An object with two properties: the accessToken and refreshToken.
    */
-  async getTokens(userId: string, email: string) {
+  async getTokens(userId: number, email: string) {
     const accessToken = await this.jwtService.signAsync(
       {
         sub: userId,

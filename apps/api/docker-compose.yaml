@@ -14,18 +14,19 @@ services:
       - 3000:3000
       - 9229:9229
     depends_on:
-      - mongodb
+      - postgres
 
-  mongodb:
-    image: mongo:5.0
-    volumes:
-      - mongodb-data:/data/db
-    environment:
-      - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
     ports:
-      - ${MONGO_PORT}:${MONGO_PORT}
+      - '5432:5432'
+    volumes:
+      - /data/postgres:/data/postgres
+    networks:
+      - postgres
 
-volumes:
-  mongodb-data:
+networks:
+  postgres:
+    driver: bridge
