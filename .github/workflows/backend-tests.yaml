@@ -31,3 +31,8 @@ jobs:
         run: |
           npm ci
           npm run test
+
+      - name: Run e2e tests
+        working-directory: ./apps/api
+        run: | 
+          npm run test:e2e
