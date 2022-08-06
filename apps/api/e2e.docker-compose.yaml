@@ -1,0 +1,24 @@
+services:
+  e2e-tests:
+    build:
+      dockerfile: e2e.Dockerfile
+      context: .
+      target: tests
+    command: sh -c "npm run prisma:migrate:deploy && npx jest --config ./tests/jest-e2e.json --watchAll"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-e2e:5432/${POSTGRES_DB}?schema=public
+    depends_on:
+      - postgres-e2e
+    stdin_open: true
+    tty: true
+
+  postgres-e2e:
+    image: postgres:13
+    container_name: postgres-e2e
+    env_file: .env
+    ports:
+      - 6543:5432
