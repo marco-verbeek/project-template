@@ -1,12 +1,16 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import * as argon2 from 'argon2';
 import * as request from 'supertest';
 
+import { AuthController } from '../src/auth/auth.controller';
 import { AuthModule } from '../src/auth/auth.module';
+import { AuthService } from '../src/auth/auth.service';
+import { AccessTokenStrategy } from '../src/auth/strategies/access-token.strategy';
+import { RefreshTokenStrategy } from '../src/auth/strategies/refresh-token.strategy';
 import { getUserMock } from '../src/common/mocks/entities/user.mock';
 import { getMockConfigService } from '../src/common/mocks/services/config-service.mock';
 import { PrismaModule } from '../src/prisma/prisma.module';
@@ -23,8 +27,20 @@ describe('Authentication (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule, AuthModule, ConfigModule],
-      providers: [{ provide: ConfigService, useValue: getMockConfigService() }],
+      imports: [
+        PrismaModule,
+        {
+          module: AuthModule,
+          imports: [ConfigModule, JwtModule.register({}), PrismaModule],
+          controllers: [AuthController],
+          providers: [
+            AuthService,
+            AccessTokenStrategy,
+            RefreshTokenStrategy,
+            { provide: ConfigService, useValue: getMockConfigService() },
+          ],
+        },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -42,9 +58,10 @@ describe('Authentication (e2e)', () => {
     await app.close();
   });
 
-  // Regenerate mocks
+  // Regenerate mocked entities and clear Jest mocks
   beforeEach(() => {
     userMock = getUserMock();
+    jest.clearAllMocks();
   });
 
   // Delete entire db
