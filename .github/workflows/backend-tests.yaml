@@ -35,4 +35,5 @@ jobs:
         run: docker exec tests npx jest --config ./tests/jest-e2e.json
       
       - name: Quit Docker containers
+        working-directory: ./apps/api
         run: docker-compose -f tests.docker-compose.yaml down
