@@ -26,6 +26,8 @@ describe('Authentication (e2e)', () => {
   let userMock: User;
 
   beforeAll(async () => {
+    const configServiceMock = getMockConfigService();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         PrismaModule,
@@ -37,10 +39,11 @@ describe('Authentication (e2e)', () => {
             AuthService,
             AccessTokenStrategy,
             RefreshTokenStrategy,
-            { provide: ConfigService, useValue: getMockConfigService() },
+            { provide: ConfigService, useValue: configServiceMock },
           ],
         },
       ],
+      providers: [{ provide: ConfigService, useValue: configServiceMock }],
     }).compile();
 
     app = moduleFixture.createNestApplication();
