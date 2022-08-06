@@ -4,7 +4,7 @@ services:
       dockerfile: e2e.Dockerfile
       context: .
       target: tests
-    command: sh -c "npm run prisma:migrate:deploy && npx jest --config ./tests/jest-e2e.json --watchAll"
+    command: sh -c "npm run prisma:migrate:deploy && npx jest --config ./tests/jest-e2e.json"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
