@@ -11,7 +11,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:repl": "nest start --entryFile repl",
+    "start:repl": "docker-compose run api-repl",
     "start:debug": "npm run prisma:migrate:deploy && nest start --debug 0.0.0.0:9229 --watch",
     "start:prod": "npm run prisma:migrate:deploy && node dist/main",
     "start:docker": "docker-compose up --renew-anon-volumes --build api",
