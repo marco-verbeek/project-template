@@ -20,11 +20,9 @@
     "prisma:generate:watch": "npx prisma generate --watch",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "docker-compose -f e2e.docker-compose.yaml run e2e-tests"
+    "test": "docker-compose -f tests.docker-compose run all-tests",
+    "test:e2e": "docker-compose -f tests.docker-compose.yaml run e2e-tests",
+    "test:unit": "docker-compose -f tests.docker-compose.yaml run unit-tests"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.7",

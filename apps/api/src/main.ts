@@ -15,6 +15,8 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
+  //
+
   const config = new DocumentBuilder()
     .setTitle('Project Template API')
     .setDescription('The Template Project OpenAPI')

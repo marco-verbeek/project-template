@@ -21,13 +21,19 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install deps and run tests
+      - name: Run Docker image
         working-directory: ./apps/api
-        run: |
-          npm ci
-          npm run test
+        run: docker-compose -f tests.docker-compose.yaml run -d --name=tests tests sh
+
+      - name: Run Prisma migration
+        run: docker exec tests npm run prisma:migrate:deploy
+
+      - name: Run unit tests
+        run: docker exec tests npx jest
+
+      - name: Run e2e tests
+        run: docker exec tests npx jest --config ./tests/jest-e2e.json
+      
+      - name: Quit Docker containers
+        working-directory: ./apps/api
+        run: docker-compose -f tests.docker-compose.yaml down

@@ -22,9 +22,17 @@ describe('Authentication (e2e)', () => {
   let userMock: User;
 
   beforeAll(async () => {
+    const configServiceMock = getMockConfigService();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule, AuthModule],
-      providers: [{ provide: ConfigService, useValue: getMockConfigService() }],
+      imports: [
+        PrismaModule,
+        {
+          module: AuthModule,
+          providers: [{ provide: ConfigService, useValue: configServiceMock }],
+        },
+      ],
+      providers: [{ provide: ConfigService, useValue: configServiceMock }],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -42,9 +50,10 @@ describe('Authentication (e2e)', () => {
     await app.close();
   });
 
-  // Regenerate mocks
+  // Regenerate mocked entities and clear Jest mocks
   beforeEach(() => {
     userMock = getUserMock();
+    jest.clearAllMocks();
   });
 
   // Delete entire db
