@@ -1,5 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
@@ -25,7 +25,13 @@ describe('Authentication (e2e)', () => {
     const configServiceMock = getMockConfigService();
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule, AuthModule],
+      imports: [
+        PrismaModule,
+        {
+          module: AuthModule,
+          providers: [{ provide: ConfigService, useValue: configServiceMock }],
+        },
+      ],
       providers: [{ provide: ConfigService, useValue: configServiceMock }],
     }).compile();
 
