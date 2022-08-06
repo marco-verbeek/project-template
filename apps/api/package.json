@@ -14,7 +14,7 @@
     "start:repl": "docker-compose run api-repl",
     "start:debug": "npm run prisma:migrate:deploy && nest start --debug 0.0.0.0:9229 --watch",
     "start:prod": "npm run prisma:migrate:deploy && node dist/main",
-    "start:docker": "docker-compose up --renew-anon-volumes --build api",
+    "start:docker": "docker-compose up --renew-anon-volumes --build api-dev",
     "prisma:studio": "npx prisma studio",
     "prisma:generate": "npx prisma generate",
     "prisma:generate:watch": "npx prisma generate --watch",
