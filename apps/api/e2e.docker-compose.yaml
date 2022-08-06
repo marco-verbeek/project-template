@@ -8,9 +8,8 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    env_file: .env
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-e2e:5432/${POSTGRES_DB}?schema=public
+      DATABASE_URL: postgresql://root:toor@postgres-e2e:5432/e2e?schema=public
     depends_on:
       - postgres-e2e
     stdin_open: true
@@ -19,6 +18,9 @@ services:
   postgres-e2e:
     image: postgres:13
     container_name: postgres-e2e
-    env_file: .env
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+      POSTGRES_DB: e2e
     ports:
       - 6543:5432
