@@ -27,28 +27,5 @@ services:
     ports:
       - 5432:5432
 
-  tests:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: development
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    environment:
-      DATABASE_URL: postgresql://root:toor@postgres-tests:5432/tests?schema=public
-    depends_on:
-      - postgres-tests
-
-  postgres-tests:
-    image: postgres:13
-    container_name: postgres-tests
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: toor
-      POSTGRES_DB: tests
-    ports:
-      - 6543:5432
-
 volumes:
   postgres:

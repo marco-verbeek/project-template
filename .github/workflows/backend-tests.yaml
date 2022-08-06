@@ -23,7 +23,7 @@ jobs:
 
       - name: Run Docker image
         working-directory: ./apps/api
-        run: docker-compose run -d --name=tests tests sh
+        run: docker-compose -f tests.docker-compose.yaml run -d --name=tests tests sh
 
       - name: Run Prisma migration
         run: docker exec tests npm run prisma:migrate:deploy
