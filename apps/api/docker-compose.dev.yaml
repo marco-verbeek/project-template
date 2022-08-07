@@ -1,5 +1,8 @@
 services:
   api-base: &base
+    # Image is built in GitHub action
+    # 'Build docker with cache'
+    image: template:latest
     build:
       dockerfile: Dockerfile
       context: .
