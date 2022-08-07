@@ -36,4 +36,4 @@ jobs:
       
       - name: Quit Docker containers
         working-directory: ./apps/api
-        run: docker-compose -f tests.docker-compose.yaml down
+        run: docker-compose -f docker-compose.tests.yaml down
