@@ -6,7 +6,6 @@ FROM node:16-alpine As development
 WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json ./
-COPY --chown=node:node prisma/ ./prisma/
 
 RUN npm ci
 
