@@ -1,5 +1,6 @@
 services:
   tests-base: &base
+    image: template:latest
     build:
       dockerfile: Dockerfile
       context: .

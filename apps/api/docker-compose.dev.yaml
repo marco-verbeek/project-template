@@ -1,7 +1,5 @@
 services:
   api-base: &base
-    image: template:latest
-    container_name: tests
     command: sh
     volumes:
       - .:/usr/src/app
