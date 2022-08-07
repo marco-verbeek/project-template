@@ -59,6 +59,9 @@ jobs:
         # run: docker-compose -f docker-compose.tests.yaml run -d --name=tests tests-base sh
         run: docker run -d --name=tests template:latest sh
 
+      - name: Test
+        run: docker exec tests ls 
+
       - name: Run Prisma migration
         run: docker exec tests npm run prisma:migrate:deploy
 
