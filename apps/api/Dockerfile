@@ -8,9 +8,9 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 
 RUN npm ci
-RUN npm run prisma:generate
 
 COPY --chown=node:node . .
+RUN npx prisma generate
 
 USER node
 
