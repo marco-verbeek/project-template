@@ -1,0 +1,37 @@
+services:
+  tests-base: &base
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      DATABASE_URL: postgresql://root:toor@postgres-tests:5432/tests?schema=public
+    depends_on:
+      - postgres-tests
+
+  all-tests:
+    <<: *base
+    command: sh -c "npm run prisma:migrate:deploy && npx jest --watchAll && npx jest --config ./tests/jest-e2e.json"
+
+  e2e-tests:
+    <<: *base
+    command: sh -c "npm run prisma:migrate:deploy && npx jest --config ./tests/jest-e2e.json --watchAll"
+    stdin_open: true
+    tty: true
+
+  unit-tests:
+    <<: *base
+    command: sh -c "npm run prisma:migrate:deploy && npx jest --watchAll"
+
+  postgres-tests:
+    image: postgres:13
+    container_name: postgres-tests
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+      POSTGRES_DB: tests
+    ports:
+      - 6543:5432
