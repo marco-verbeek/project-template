@@ -3,10 +3,7 @@ services:
     # Image is built in GitHub action
     # 'Build docker with cache'
     image: template:latest
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: development
+    build: .
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
