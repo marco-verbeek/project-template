@@ -39,7 +39,6 @@ jobs:
         with:
           context: ./apps/api
           builder: ${{ steps.buildx.outputs.name }}
-          file: Dockerfile
           target: development
           push: false
           load: true
