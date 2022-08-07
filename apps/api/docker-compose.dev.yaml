@@ -1,9 +1,7 @@
 services:
   api-base: &base
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: development
+    image: template:latest
+    command: sh
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
