@@ -1,5 +1,5 @@
 services:
-  tests-base: &base
+  tests-base:
     image: template:latest
     build:
       dockerfile: Dockerfile
@@ -14,17 +14,20 @@ services:
       - postgres-tests
 
   all-tests:
-    <<: *base
+    extends:
+      service: tests-base
     command: sh -c "npm run prisma:migrate:deploy && npx jest --watchAll && npx jest --config ./tests/jest-e2e.json"
 
   e2e-tests:
-    <<: *base
+    extends:
+      service: tests-base
     command: sh -c "npm run prisma:migrate:deploy && npx jest --config ./tests/jest-e2e.json --watchAll"
     stdin_open: true
     tty: true
 
   unit-tests:
-    <<: *base
+    extends:
+      service: tests-base
     command: sh -c "npm run prisma:migrate:deploy && npx jest --watchAll"
 
   postgres-tests:
