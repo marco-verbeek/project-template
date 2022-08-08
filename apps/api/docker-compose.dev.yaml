@@ -1,5 +1,5 @@
 services:
-  api-base:
+  api-base: &base
     command: sh
     volumes:
       - .:/usr/src/app
@@ -13,13 +13,11 @@ services:
       - postgres
 
   api-dev:
-    extends:
-      service: api-base
+    <<: *base
     command: npm run start:debug
 
   api-repl:
-    extends:
-      service: api-base
+    <<: *base
     command: npx nest start --entryFile repl
     stdin_open: true
     tty: true
