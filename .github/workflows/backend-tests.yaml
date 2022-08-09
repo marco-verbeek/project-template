@@ -12,10 +12,13 @@ on:
     paths:
       - 'apps/api/**'
 
-jobs:
+jobs: 
   run-tests:
     name: Run tests
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Check out Git repository
@@ -42,7 +45,7 @@ jobs:
           target: development
           push: false
           load: true
-          tags: template:latest
+          tags: template-tests:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
