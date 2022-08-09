@@ -1,5 +1,10 @@
 services:
   api-base: &base
+    image: template-dev:latest
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
     command: sh
     volumes:
       - .:/usr/src/app
@@ -10,28 +15,28 @@ services:
       - 3000:3000
       - 9229:9229
     depends_on:
-      - postgres
+      - template-postgres
 
   api-dev:
     <<: *base
-    command: npm run start:debug
+    command: sh -c "npm run prisma:migrate:deploy && npx nest start --debug 0.0.0.0:9229 --watch"
 
   api-repl:
     <<: *base
-    command: npx nest start --entryFile repl
+    command: sh -c "npm run prisma:migrate:deploy && npx nest start --entryFile repl"
     stdin_open: true
     tty: true
 
-  postgres:
+  template-postgres:
     image: postgres:13
-    container_name: postgres
+    container_name: template-postgres
     restart: always
     volumes:
-      - /data/postgres/project-template:/data/postgres
+      - /data/postgres/template:/data/postgres
     env_file:
       - .env
     ports:
       - 5432:5432
 
 volumes:
-  postgres:
+  template-postgres:
